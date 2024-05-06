@@ -1,0 +1,140 @@
+[gd_scene load_steps=18 format=3 uid="uid://cphbky3vtmvwf"]
+
+[ext_resource type="Texture2D" uid="uid://b2k1b55jeiysd" path="res://Graphics/PongLeft.png" id="1_rvfrr"]
+[ext_resource type="PhysicsMaterial" uid="uid://chwpf8s4xropj" path="res://Materials/BallPhysicsMaterial.tres" id="1_svpkl"]
+[ext_resource type="Shape2D" uid="uid://bgw2ke21wtl1d" path="res://BallShape.tres" id="2_1d0ha"]
+[ext_resource type="Script" path="res://C#Scripts/Pong.cs" id="2_ptq6w"]
+[ext_resource type="Script" path="res://C#Scripts/Ball.cs" id="2_uqyq1"]
+[ext_resource type="Texture2D" uid="uid://cug83d327847l" path="res://Graphics/Ball.png" id="3_5rf56"]
+[ext_resource type="Texture2D" uid="uid://cinj7p403omhu" path="res://Graphics/PongRight.png" id="3_lawqx"]
+[ext_resource type="Script" path="res://C#Scripts/PongAI.cs" id="7_f7gk5"]
+[ext_resource type="Texture2D" uid="uid://dbbudeqorac43" path="res://Graphics/Animations/0.png" id="9_wqonb"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_j0kb7"]
+radius = 13.0
+height = 114.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_titkf"]
+radius = 13.0
+height = 114.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2o8yd"]
+size = Vector2(1280, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_004x2"]
+size = Vector2(20, 720)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7dcre"]
+atlas = ExtResource("9_wqonb")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n7gcs"]
+atlas = ExtResource("9_wqonb")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yacus"]
+atlas = ExtResource("9_wqonb")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0sjtp"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7dcre")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n7gcs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yacus")
+}],
+"loop": true,
+"name": &"zero",
+"speed": 5.0
+}]
+
+[node name="Pong" type="Node2D"]
+
+[node name="Ball" type="RigidBody2D" parent="."]
+position = Vector2(640, 360)
+physics_material_override = ExtResource("1_svpkl")
+gravity_scale = 0.0
+script = ExtResource("2_uqyq1")
+initialForce = 1000.0
+initialForceDirection = Vector2(0.5, 0.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ball"]
+scale = Vector2(1, 1.003)
+shape = ExtResource("2_1d0ha")
+one_way_collision_margin = 0.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Ball"]
+texture = ExtResource("3_5rf56")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="Ball"]
+gravity = Vector2(0, 0)
+initial_velocity_min = 35.09
+initial_velocity_max = 59.65
+
+[node name="PongLeft" type="StaticBody2D" parent="."]
+position = Vector2(160, 360)
+script = ExtResource("2_ptq6w")
+moveSpeed = 700.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PongLeft"]
+shape = SubResource("CapsuleShape2D_j0kb7")
+
+[node name="Sprite2D" type="Sprite2D" parent="PongLeft"]
+position = Vector2(-1, -3)
+texture = ExtResource("1_rvfrr")
+
+[node name="PongRight" type="StaticBody2D" parent="."]
+position = Vector2(1120, 360)
+script = ExtResource("7_f7gk5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PongRight"]
+position = Vector2(-1.5, 0.5)
+scale = Vector2(1, 0.990832)
+shape = SubResource("CapsuleShape2D_titkf")
+
+[node name="Sprite2D" type="Sprite2D" parent="PongRight"]
+texture = ExtResource("3_lawqx")
+
+[node name="Arena" type="Node2D" parent="."]
+position = Vector2(640, 360)
+
+[node name="ArenaBorder" type="StaticBody2D" parent="Arena"]
+position = Vector2(0, -360)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Arena/ArenaBorder"]
+shape = SubResource("RectangleShape2D_2o8yd")
+
+[node name="ArenaBorder2" type="StaticBody2D" parent="Arena"]
+position = Vector2(0, 360)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Arena/ArenaBorder2"]
+shape = SubResource("RectangleShape2D_2o8yd")
+
+[node name="ArenaBorder3" type="StaticBody2D" parent="Arena"]
+position = Vector2(-640, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Arena/ArenaBorder3"]
+shape = SubResource("RectangleShape2D_004x2")
+
+[node name="ArenaBorder4" type="StaticBody2D" parent="Arena"]
+position = Vector2(640, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Arena/ArenaBorder4"]
+shape = SubResource("RectangleShape2D_004x2")
+
+[node name="Area2D" type="Area2D" parent="Arena"]
+
+[node name="Scoreboard" type="Node2D" parent="."]
+position = Vector2(640, 188)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Scoreboard"]
+sprite_frames = SubResource("SpriteFrames_0sjtp")
+animation = &"zero"
+autoplay = "zero"
+frame_progress = 0.392413
+speed_scale = 3.0
